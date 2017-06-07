@@ -7,10 +7,6 @@ let numbers = [1, 5, 10];
 
 let source = Observable.create((observer) => {
     numbers.forEach((num) => {
-        // if (num === 5) {
-        //     observer.error(`oh no! the num was ${num}`);
-        // }
-
         observer.next(num);
     });
 
