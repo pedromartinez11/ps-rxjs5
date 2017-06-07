@@ -1,7 +1,10 @@
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter';
+
 
 let numbers = [1, 5, 10];
-
 
 /** 'observer' param has the .next(val), error(err), complete() methods */
 let source = Observable.create((observer) => {
