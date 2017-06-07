@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 
 let numbers = [1, 5, 10];
 
@@ -14,7 +14,7 @@ let source = Observable.create((observer) => {
         i++;
         if (i < numbers.length) {
             // there' more values to process
-            setTimeout(produceValue, 2000);
+            setTimeout(produceValue, 300);
         } else {
             // we're done
             observer.complete();
@@ -22,7 +22,13 @@ let source = Observable.create((observer) => {
     }
 
     produceValue();
-});
+}).map(n => {
+    // double each val
+    return n * 2;
+}).filter(n => {
+    // only keep items greater than 4
+    return n > 4;
+});;
 
 // simple subscribe that just takes in 3 functions: next(value), error(err), complete();
 // it automatically creates an Observer!
@@ -31,3 +37,6 @@ source.subscribe(
     (err) => console.log(`error: ${err}`),
     () => console.log('complete')
 );
+
+// output 10, 20
+// 2 (doubled from 1) is skipped because it was filtered out
