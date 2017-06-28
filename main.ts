@@ -1,30 +1,28 @@
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
-let circle = document.getElementById('circle');
+let output = document.getElementById('output');
+let button = document.getElementById('button');
 
-/** 'observer' param has the .next(val), error(err), complete() methods */
-let source = Observable.fromEvent(document, 'mousemove')
-    .map((ev: MouseEvent) => {
-        return {
-            x: ev.clientX,
-            y: ev.clientY
-        }
-    })
-    .filter(val => val.x < 500 && val.y < 500)
-    .delay(300);
+let click = Observable.fromEvent(document, 'click');
 
-const onNext = (value) => {
-    circle.style.left = value.x + 'px';
-    circle.style.top = value.y + 'px';
+const load = (url: string) => {
+    let xhr = new XMLHttpRequest();
+
+    xhr.addEventListener('load', () => {
+        const movies = JSON.parse(xhr.responseText);
+        movies.forEach(m => {
+            const div = document.createElement('div');
+            div.innerText = m.title;
+            output.appendChild(div);
+        });
+    });
+
+    xhr.open("GET", url);
+    xhr.send();
 };
 
-// simple subscribe that just takes in 3 functions: next(value), error(err), complete();
-// it automatically creates an Observer!
-source.subscribe(
-    onNext,
-    (err) => console.log(`error: ${err}`),
+click.subscribe(
+    ev => load('movies.json'),
+    e => console.log(`error: ${e}`),
     () => console.log('complete')
 );
-
-// output 10, 20
-// 2 (doubled from 1) is skipped because it was filtered out
