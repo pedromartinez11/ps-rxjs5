@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 let output = document.getElementById('output');
 let button = document.getElementById('button');
 
-let click = Observable.fromEvent(document, 'click');
+let click = Observable.fromEvent(button, 'click');
 
 const load = (url: string) => {
     console.log('load() outer() ');
