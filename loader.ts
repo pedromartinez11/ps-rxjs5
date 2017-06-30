@@ -35,11 +35,11 @@ export const loadWithFetch = (url: string) => {
     }).retryWhen(retryStrategy());
 };
 
-export const load = (url: string) => {
+export const loadXHR = (url: string) => {
     return Observable.create(observer => {
         const xhr = new XMLHttpRequest();
 
-        xhr.addEventListener('load', () => {
+        const loadHandler = () => {
             if (xhr.status === 200) {
                 const data = JSON.parse(xhr.responseText);
                 observer.next(data);
@@ -47,9 +47,18 @@ export const load = (url: string) => {
             } else {
                 observer.error(xhr.statusText);
             }
-        });
+        };
+        xhr.addEventListener('load', loadHandler);
 
         xhr.open("GET", url);
         xhr.send();
+
+        return () => {
+            // handle cancel & cleanup
+            console.log('cleanup');
+            xhr.removeEventListener('load', loadHandler);
+            xhr.abort();
+        };
+
     }).retryWhen(retryStrategy({ attemps: 5, delay: 2000 }));
 };

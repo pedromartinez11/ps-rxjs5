@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { loadWithFetch } from "./loader";
+import { loadWithFetch, loadXHR } from "./loader";
 
 
 let output = document.getElementById('output');
@@ -16,12 +16,13 @@ const renderMoviesFromData = movies => {
 }
 
 // this should not do a network request since nothing subscribes to it
-loadWithFetch('moviess.json')
+const subscription = loadXHR('moviess.json')
     .subscribe(
         renderMoviesFromData,
         err => console.log('error: ', err),
         () => console.log('complete')
     );
+subscription.unsubscribe();
 
 click
     .flatMap(ev => loadWithFetch("moviess.json"))
