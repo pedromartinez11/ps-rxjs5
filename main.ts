@@ -19,6 +19,17 @@ const retryStrategy = ({attemps = 3, delay = 1000}) => {
     };
 };
 
+const loadWithFetch = (url: string) => {
+    return Observable.defer(() => {
+        return Observable.fromPromise(
+            fetch(url)
+                .then(r => {
+                    return r.json();
+                })
+        );
+    })
+};
+
 const load = (url: string) => {
     return Observable.create(observer => {
         const xhr = new XMLHttpRequest();
@@ -46,8 +57,12 @@ const renderMoviesFromData = movies => {
     });
 }
 
+// this should not do a network request since nothing subscribes to it
+loadWithFetch('movies.json');
+    // .subscribe(renderMoviesFromData);
+
 click
-    .flatMap(ev => load("moviess.json"))
+    .flatMap(ev => loadWithFetch("movies.json"))
     .subscribe(
         data => renderMoviesFromData(data),
         e => console.log('error: ', e),
